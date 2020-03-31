@@ -28,7 +28,7 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     public boolean addPlayer(String firstName, String lastName, int uniformNumber, String teamName) {
 
-        SoccerPlayer player = new SoccerPlayer(firstName,lastName,uniformNumber, teamName);
+        SoccerPlayer player = new SoccerPlayer(firstName, lastName, uniformNumber, teamName);
         for(SoccerPlayer value: hashMap.values()){
             if (value.equals(player)){
                 Log.e(makeNameString(firstName,lastName), "addPlayer: failed since player was already in the database");
@@ -82,6 +82,7 @@ public class SoccerDatabase implements SoccerDB {
     public boolean bumpGoals(String firstName, String lastName) {
         if(hashMap.containsKey(makeNameString(firstName,lastName))){
             hashMap.get(makeNameString(firstName,lastName)).bumpGoals();
+            Log.e(makeNameString(firstName,lastName), "number of goals: " + hashMap.get(makeNameString(firstName,lastName)).getGoals());
             return true;
         }
         return false;
@@ -226,7 +227,47 @@ public class SoccerDatabase implements SoccerDB {
     // read data from file
     @Override
     public boolean readData(File file) {
-        return file.exists();
+        Scanner sc;
+        try {
+            sc = new Scanner(file);
+            String first = "";
+            String last = "";
+            int uniform = 0;
+            String team = "";
+            while (sc.hasNextLine())
+                first = sc.next();
+                last = sc.next();
+                uniform = sc.nextInt();
+                team = sc.next();
+                SoccerPlayer player = new SoccerPlayer(first,last,uniform,team);
+
+                for(int i = 0; i < sc.nextInt(); i++){
+                    player.bumpGoals();
+                }
+                for(int i = 0; i < sc.nextInt(); i++){
+                    player.bumpAssists();
+                }
+                for(int i = 0; i < sc.nextInt(); i++){
+                    player.bumpShots();
+                }
+                for(int i = 0; i < sc.nextInt(); i++){
+                    player.bumpSaves();
+                }
+                for(int i = 0; i < sc.nextInt(); i++){
+                    player.bumpFouls();
+                }
+                for(int i = 0; i < sc.nextInt(); i++){
+                    player.bumpYellowCards();
+                }
+                for(int i = 0; i < sc.nextInt(); i++){
+                    player.bumpRedCards();
+                }
+                return true;
+                
+            } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -245,11 +286,17 @@ public class SoccerDatabase implements SoccerDB {
                 pw.println(logString(player.getLastName()));
                 pw.println(logString(player.getUniform() + ""));
                 pw.println(logString(player.getTeamName()));
+                pw.println(logString(player.getGoals() + ""));
+                pw.println(logString(player.getAssists() + ""));
+                pw.println(logString(player.getShots() + ""));
+                pw.println(logString(player.getSaves() + ""));
+                pw.println(logString(player.getFouls() + ""));
+                pw.println(logString(player.getYellowCards() + ""));
+                pw.println(logString(player.getRedCards() + ""));
             }
+            return true;
         }
         catch (FileNotFoundException fi){ Log.e("file", "could not find the file"); return false; }
-
-        return false;
     }
 
     /**
@@ -270,7 +317,14 @@ public class SoccerDatabase implements SoccerDB {
     // return list of teams
     @Override
     public HashSet<String> getTeams() {
-        return new HashSet<String>();
+        HashSet<String> teamNames = new HashSet<String>();
+        for (SoccerPlayer player : hashMap.values()){
+            //teamNames does not contain that team name add it to the HashSet
+            if (!teamNames.contains(player.getTeamName())){
+                teamNames.add(player.getTeamName());
+            }
+        }
+        return teamNames;
     }
 
 }
