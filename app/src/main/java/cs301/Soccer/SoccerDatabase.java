@@ -1,5 +1,6 @@
 package cs301.Soccer;
 
+import android.graphics.drawable.shapes.OvalShape;
 import android.util.Log;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 import java.io.File;
@@ -51,6 +52,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean removePlayer(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.remove(makeNameString(firstName,lastName));
+            return true;
+        }
         return false;
     }
 
@@ -61,6 +66,9 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public SoccerPlayer getPlayer(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            return hashMap.get(makeNameString(firstName,lastName));
+        }
         return null;
     }
 
@@ -71,6 +79,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpGoals(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.get(makeNameString(firstName,lastName)).bumpGoals();
+            return true;
+        }
         return false;
     }
 
@@ -81,6 +93,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpAssists(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.get(makeNameString(firstName,lastName)).bumpAssists();
+            return true;
+        }
         return false;
     }
 
@@ -91,6 +107,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpShots(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.get(makeNameString(firstName,lastName)).bumpShots();
+            return true;
+        }
         return false;
     }
 
@@ -101,6 +121,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpSaves(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.get(makeNameString(firstName,lastName)).bumpSaves();
+            return true;
+        }
         return false;
     }
 
@@ -111,6 +135,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpFouls(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.get(makeNameString(firstName,lastName)).bumpFouls();
+            return true;
+        }
         return false;
     }
 
@@ -121,6 +149,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpYellowCards(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.get(makeNameString(firstName,lastName)).bumpYellowCards();
+            return true;
+        }
         return false;
     }
 
@@ -131,6 +163,10 @@ public class SoccerDatabase implements SoccerDB {
      */
     @Override
     public boolean bumpRedCards(String firstName, String lastName) {
+        if(hashMap.containsKey(makeNameString(firstName,lastName))){
+            hashMap.get(makeNameString(firstName,lastName)).bumpRedCards();
+            return true;
+        }
         return false;
     }
 
@@ -142,7 +178,16 @@ public class SoccerDatabase implements SoccerDB {
     @Override
     // report number of players on a given team (or all players, if null)
     public int numPlayers(String teamName) {
-        return -1;
+        int toReturn = 0;
+        if (teamName == null){
+            return hashMap.size();
+        }
+        for(SoccerPlayer value: hashMap.values()){
+            if (value.getTeamName().equalsIgnoreCase(teamName)){
+                toReturn++;
+            }
+        }
+        return toReturn;
     }
 
     /**
@@ -153,6 +198,22 @@ public class SoccerDatabase implements SoccerDB {
     // get the nTH player
     @Override
     public SoccerPlayer playerNum(int idx, String teamName) {
+        int temp = idx;
+        if (teamName == null){
+            for(SoccerPlayer value: hashMap.values()){
+                if (temp == 0){
+                    return value;
+                } else temp--;
+            }
+        }
+        for(SoccerPlayer value: hashMap.values()){
+            if (temp == 0 && value.getTeamName().equalsIgnoreCase(teamName)){
+                return value;
+            }
+            if (value.getTeamName().equalsIgnoreCase(teamName)){
+                temp--;
+            }
+        }
         return null;
     }
 
