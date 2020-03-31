@@ -4,6 +4,7 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.util.Log;
 import cs301.Soccer.soccerPlayer.SoccerPlayer;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -236,6 +237,18 @@ public class SoccerDatabase implements SoccerDB {
     // write data to file
     @Override
     public boolean writeData(File file) {
+        PrintWriter pw;
+        try {
+            pw = new PrintWriter(file);
+            for(SoccerPlayer player : hashMap.values()){
+                pw.println(logString(player.getFirstName()));
+                pw.println(logString(player.getLastName()));
+                pw.println(logString(player.getUniform() + ""));
+                pw.println(logString(player.getTeamName()));
+            }
+        }
+        catch (FileNotFoundException fi){ Log.e("file", "could not find the file"); return false; }
+
         return false;
     }
 
